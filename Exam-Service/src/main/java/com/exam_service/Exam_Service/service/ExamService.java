@@ -1,5 +1,6 @@
 package com.exam_service.Exam_Service.service;
 
+import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
 import com.exam_service.Exam_Service.dto.response.CreateExamResponse;
 import com.exam_service.Exam_Service.dto.response.ExamResponse;
@@ -21,4 +22,6 @@ public interface ExamService {
    PublishedExamResponse publishedExam(Long examId);
 
    public void deleteExamById(Long examId);
+
+   ExamAnswerKeyResponse getExamAnswerKey(Long examId);
 }

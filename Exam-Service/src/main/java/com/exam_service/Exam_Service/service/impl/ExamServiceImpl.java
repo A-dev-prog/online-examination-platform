@@ -1,5 +1,7 @@
 package com.exam_service.Exam_Service.service.impl;
 
+import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
+import com.exam_service.Exam_Service.dto.internal.QuestionAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
 import com.exam_service.Exam_Service.dto.request.CreateQuestionRequest;
 import com.exam_service.Exam_Service.dto.response.*;
@@ -21,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -193,6 +197,37 @@ public class ExamServiceImpl implements ExamService {
 
         examRepository.delete(exam);
 
+    }
+
+    @Override
+    public ExamAnswerKeyResponse getExamAnswerKey(Long examId) {
+
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new ResourceNotFoundException("Exam not found with id " + examId));
+
+        List<QuestionAnswerKeyResponse> questions = exam.getQuestions()
+                .stream()
+                .map(question -> {
+                          Long correctOptionId =  question.getOptions()
+                                    .stream()
+                                    .filter(answerOption -> answerOption.getCorrect())
+                                    .findFirst()
+                                    .orElseThrow(() -> new RuntimeException("Correct option is not found"))
+                                    .getId();
+
+                            return new QuestionAnswerKeyResponse(
+                                    question.getId(),
+                                    correctOptionId
+                            );
+
+
+                        }
+                ).toList();
+
+        return new ExamAnswerKeyResponse(
+                exam.getId(),
+                questions
+        );
     }
 
 

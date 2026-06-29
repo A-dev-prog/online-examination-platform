@@ -1,5 +1,6 @@
 package com.exam_service.Exam_Service.controller;
 
+import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
 import com.exam_service.Exam_Service.dto.response.CreateExamResponse;
 import com.exam_service.Exam_Service.dto.response.ExamResponse;
@@ -50,5 +51,12 @@ public class ExamController {
     {
         examService.deleteExamById(examId);
         return ResponseEntity.ok("Exam has been deleted successfully");
+    }
+
+    @GetMapping("/internal/{examId}/answer-key")
+    public ExamAnswerKeyResponse getAnswerKey(
+            @PathVariable Long examId
+    ) {
+        return examService.getExamAnswerKey(examId);
     }
 }

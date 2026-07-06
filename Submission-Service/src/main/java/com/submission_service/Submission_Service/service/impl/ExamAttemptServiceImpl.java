@@ -1,6 +1,8 @@
 package com.submission_service.Submission_Service.service.impl;
 
 import com.submission_service.Submission_Service.client.ExamServiceClient;
+import com.submission_service.Submission_Service.dto.internal.AttemptAnswerResponse;
+import com.submission_service.Submission_Service.dto.internal.AttemptDetailResponse;
 import com.submission_service.Submission_Service.dto.request.StartExamRequest;
 import com.submission_service.Submission_Service.dto.request.SubmitExamRequest;
 import com.submission_service.Submission_Service.dto.response.*;
@@ -109,5 +111,30 @@ public class ExamAttemptServiceImpl implements ExamAttemptService {
                 answers
         );
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AttemptDetailResponse getAttemptDetails(Long attemptId) {
+
+        ExamAttempt attempt = examAttemptRepository.findById(attemptId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Attempt not found with id : " + attemptId));
+
+        List<AttemptAnswerResponse> answers = attempt.getAnswers()
+                .stream()
+                .map(answer -> new AttemptAnswerResponse(
+                        answer.getQuestionId(),
+                        answer.getSelectedOptionId()
+                ))
+                .toList();
+
+        return new AttemptDetailResponse(
+                attempt.getId(),
+                attempt.getExamId(),
+                attempt.getStudentId(),
+                answers
+        );
     }
 }

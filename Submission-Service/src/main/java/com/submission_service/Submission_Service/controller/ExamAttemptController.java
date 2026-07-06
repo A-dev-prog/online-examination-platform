@@ -1,10 +1,12 @@
 package com.submission_service.Submission_Service.controller;
 
+import com.submission_service.Submission_Service.dto.internal.AttemptDetailResponse;
 import com.submission_service.Submission_Service.dto.request.StartExamRequest;
 import com.submission_service.Submission_Service.dto.request.SubmitExamRequest;
 import com.submission_service.Submission_Service.dto.response.AttemptResponse;
 import com.submission_service.Submission_Service.dto.response.StartExamResponse;
 import com.submission_service.Submission_Service.dto.response.SubmitExamResponse;
+import com.submission_service.Submission_Service.service.ExamAttemptService;
 import com.submission_service.Submission_Service.service.impl.ExamAttemptServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +36,12 @@ public class ExamAttemptController {
     public ResponseEntity<AttemptResponse> getAttempt(@Valid @PathVariable Long attemptId) {
 
         return ResponseEntity.ok(examAttemptService.getAttempt(attemptId));
+    }
+
+    @GetMapping("/internal/{attemptId}")
+    public AttemptDetailResponse getAttemptDetails(
+            @PathVariable Long attemptId
+    ) {
+        return examAttemptService.getAttemptDetails(attemptId);
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthServiceImpl authService;
@@ -22,7 +22,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid  @RequestBody RegisterRequest request)
     {
-
+        System.out.println("Register API Hit");
         return  ResponseEntity.ok(authService.register(request));
     }
 

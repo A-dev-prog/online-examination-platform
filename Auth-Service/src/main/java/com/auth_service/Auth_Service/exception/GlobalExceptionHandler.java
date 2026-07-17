@@ -1,4 +1,4 @@
-package com.submission_service.Submission_Service.exception;
+package com.auth_service.Auth_Service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +13,17 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String > handleNotFound(ResourceNotFoundException ex)
-    {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<String> handleNotFound(
+            ResourceNotFoundException ex
+    ) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Map<String, String>> handleBusinessException(
+    public ResponseEntity<Map<String,String>> handleBusinessException(
             BusinessException ex
     ) {
 
@@ -34,16 +38,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(
-            MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String,String>> handleValidation(
+            MethodArgumentNotValidException ex
+    ){
 
-        Map<String, String> errors = new HashMap<>();
+        Map<String,String> errors = new HashMap<>();
 
-        ex.getBindingResult().getFieldErrors()
+        ex.getBindingResult()
+                .getFieldErrors()
                 .forEach(error ->
-                        errors.put(error.getField(), error.getDefaultMessage())
-                );
+                        errors.put(
+                                error.getField(),
+                                error.getDefaultMessage()
+                        ));
 
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity
+                .badRequest()
+                .body(errors);
     }
 }

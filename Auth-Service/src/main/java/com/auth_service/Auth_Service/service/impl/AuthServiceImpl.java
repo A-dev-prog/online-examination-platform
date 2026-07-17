@@ -6,6 +6,8 @@ import com.auth_service.Auth_Service.dto.RegisterRequest;
 import com.auth_service.Auth_Service.dto.UserResponse;
 import com.auth_service.Auth_Service.entity.Role;
 import com.auth_service.Auth_Service.entity.User;
+import com.auth_service.Auth_Service.exception.BusinessException;
+import com.auth_service.Auth_Service.exception.ResourceNotFoundException;
 import com.auth_service.Auth_Service.repository.RoleRepository;
 import com.auth_service.Auth_Service.repository.UserRepository;
 import com.auth_service.Auth_Service.security.jwt.JwtService;
@@ -39,11 +41,11 @@ public class AuthServiceImpl implements AuthService {
 
        if(userRepository.existsByEmail(request.email()))
        {
-           throw new RuntimeException("Email already exists");
+           throw new BusinessException("Email already exists");
        }
 
         Role role = roleRepository.findByName(request.role())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
        User user = User.builder()
                .username(request.username())

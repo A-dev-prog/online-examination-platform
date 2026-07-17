@@ -3,13 +3,15 @@ package com.result_service.Result_Service.controller;
 import com.result_service.Result_Service.dto.GenerateResultResponse;
 import com.result_service.Result_Service.dto.ResultResponse;
 import com.result_service.Result_Service.service.ResultService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/api/results")
 @RequiredArgsConstructor
@@ -19,18 +21,26 @@ public class ResultController {
 
     @PostMapping("/generate/{attemptId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public GenerateResultResponse generateResult(@PathVariable Long attemptId) {
+    public GenerateResultResponse generateResult(
+            @Positive(message = "Attempt ID must be greater than 0")
+            @PathVariable Long attemptId) {
 
         return resultService.generateResult(attemptId);
     }
 
     @GetMapping("/{resultId}")
-    public ResponseEntity<ResultResponse> getResult(@PathVariable Long resultId) {
+    public ResponseEntity<ResultResponse> getResult(
+            @Positive(message = "Result ID must be greater than 0")
+            @PathVariable Long resultId) {
+
         return ResponseEntity.ok(resultService.getResult(resultId));
     }
 
     @GetMapping("/student/{studentId}")
-    public List<ResultResponse> getResultsByStudent(@PathVariable Long studentId) {
+    public List<ResultResponse> getResultsByStudent(
+            @Positive(message = "Student ID must be greater than 0")
+            @PathVariable Long studentId) {
+
         return resultService.getResultsByStudent(studentId);
     }
 }

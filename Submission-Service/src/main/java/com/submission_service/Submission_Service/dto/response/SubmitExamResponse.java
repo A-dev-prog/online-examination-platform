@@ -1,6 +1,24 @@
 package com.submission_service.Submission_Service.dto.response;
 
-public record SubmitExamResponse(Long attemptId,
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Response returned after submitting an exam")
+public record SubmitExamResponse(@Schema(
+        description = "Unique ID of the exam attempt",
+        example = "1"
+)
+                                 Long attemptId,
+
+                                 @Schema(
+                                         description = "Current status of the exam attempt",
+                                         example = "SUBMITTED"
+                                 )
                                  String status,
-                                 String message) {
+
+                                 @Schema(
+                                         description = "Operation status message",
+                                         example = "Exam submitted successfully"
+                                 )
+                                 String message
+) {
 }

@@ -1,218 +1,282 @@
-# Online Examination Platform
+# 📝 Online Examination Platform (Microservices)
 
-A microservices-based Online Examination Platform built using Java, Spring Boot, Spring Cloud, and MySQL.
-
-## Overview
-
-This project allows teachers/admins to create and manage online exams, while students can attempt and submit exams through a scalable microservices architecture.
+A scalable **Online Examination Platform** built using **Java, Spring Boot, Spring Cloud, JWT Authentication, MySQL, and Microservices Architecture**. The platform allows teachers to create and publish exams, students to attempt them, and automatically generates results after submission.
 
 ---
 
-## Architecture
+# 🚀 Features
 
-```
-Online Examination Platform
+### Authentication
 
-├── Eureka Server
-├── Auth Service
-├── Exam Service
-└── Submission Service
-```
+* User Registration
+* User Login
+* JWT Authentication
+* Role-based access (Admin, Teacher, Student)
+* Secure REST APIs
 
----
+### Exam Management
 
-## Tech Stack
+* Create Exam
+* Add Questions and Answer Options
+* Publish Exam
+* View Exam Details
+* Delete Exam
+* Get Exam Answer Key (Internal API)
 
-- Java 21
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- Spring Cloud
-- Eureka Server
-- OpenFeign
-- MySQL
-- Swagger / OpenAPI
-- Maven
-- Git & GitHub
+### Exam Attempt
 
----
+* Start Exam
+* Submit Answers
+* View Attempt Details
+* Internal Attempt API for Result Service
 
-## Implemented Services
+### Result Management
 
-### 1. Auth Service
-
-#### Features
-
-- User Registration
-- User Login
-- Password Encryption using BCrypt
-- JWT Authentication
-- Custom UserDetailsService
-- Role-Based User Management
-
-#### APIs
-
-```http
-POST /api/auth/register
-POST /api/auth/login
-```
+* Generate Result
+* Calculate Correct Answers
+* Calculate Percentage
+* PASS / FAIL Status
+* View Student Results
 
 ---
 
-### 2. Exam Service
+# 🏗️ Microservices
 
-#### Features
+## 1. Auth Service
 
-- Create Exam
-- Publish Exam
-- Delete Exam
-- Get Exam Details
-- Get All Exams
-- Business Validation
-- Global Exception Handling
-- Swagger Documentation
+Responsible for authentication and authorization.
 
-#### Entities
+### APIs
 
-- Exam
-- Question
-- Option
-
-#### APIs
-
-```http
-POST   /api/exams
-GET    /api/exams
-GET    /api/exams/{id}
-PUT    /api/exams/{id}/publish
-DELETE /api/exams/{id}
-```
+* Register User
+* Login User
+* Get Logged-in User
 
 ---
 
-### 3. Submission Service
+## 2. Exam Service
 
-#### Features
+Responsible for exam management.
 
-- Start Exam Attempt
-- Submit Exam
-- Get Attempt Details
-- Exam Validation via OpenFeign
-- Global Exception Handling
-- Request Validation
-- Swagger Documentation
+### APIs
 
-#### Entities
-
-- ExamAttempt
-- StudentAnswer
-
-#### APIs
-
-```http
-POST /api/attempts/start
-POST /api/attempts/{attemptId}/submit
-GET  /api/attempts/{attemptId}
-```
+* Create Exam
+* Get Exam
+* Get All Exams
+* Publish Exam
+* Delete Exam
+* Internal Answer Key API
 
 ---
 
-## Service Communication
+## 3. Submission Service
 
-### Submission Service → Exam Service
+Responsible for exam attempts.
 
-Using OpenFeign Client.
+### APIs
 
-Purpose:
-
-- Verify exam exists before creating an attempt.
-- Prevent invalid exam submissions.
-
----
-
-## Current Progress
-
-### Completed
-
-- ✅ Eureka Server
-- ✅ Auth Service
-- ✅ Exam Service
-- ✅ Submission Service
-- ✅ JWT Authentication
-- ✅ Swagger Integration
-- ✅ Global Exception Handling
-- ✅ Validation
-- ✅ OpenFeign Communication
+* Start Exam
+* Submit Exam
+* Get Attempt
+* Internal Attempt Details API
 
 ---
 
-## Next Immediate Task
+## 4. Result Service
 
-### Result Service
+Responsible for result generation.
 
-Planned Features:
+### APIs
 
-- Calculate Exam Score
-- Generate Result
-- Percentage Calculation
-- Pass/Fail Evaluation
-- Result APIs
+* Generate Result
+* Get Result
+* Get Results By Student
 
 ---
 
-## Running the Project
+# 🛠 Tech Stack
 
-### Start Services in Order
+## Backend
 
-1. Eureka Server
-2. Auth Service
-3. Exam Service
-4. Submission Service
+* Java 21
+* Spring Boot
+* Spring MVC
+* Spring Data JPA
+* Spring Security
+* JWT
+* Hibernate
 
-### Eureka Dashboard
+## Microservices
+
+* Spring Cloud
+* Eureka Server
+* Spring Cloud Gateway
+* OpenFeign
+
+## Database
+
+* MySQL
+
+## Documentation
+
+* Swagger / OpenAPI
+
+## Build Tool
+
+* Maven
+
+---
+
+# 🏛️ Architecture
+
+Client
+
+⬇
+
+API Gateway
+
+⬇
+
+Eureka Discovery Server
+
+⬇
+
+Auth Service
+
+Exam Service
+
+Submission Service
+
+Result Service
+
+⬇
+
+MySQL Databases
+
+---
+
+# 🔐 Authentication Flow
+
+1. Register User
+2. Login
+3. Receive JWT Token
+4. Authorize using Swagger or frontend
+5. Access secured APIs
+
+---
+
+# 📝 Exam Workflow
+
+Teacher
+
+Create Exam
+
+↓
+
+Add Questions
+
+↓
+
+Publish Exam
+
+↓
+
+Student Starts Exam
+
+↓
+
+Student Submits Answers
+
+↓
+
+Result Service Generates Result
+
+↓
+
+Student Views Result
+
+---
+
+# 📚 API Documentation
+
+Each microservice provides Swagger UI documentation.
+
+* Auth Service → `/swagger-ui/index.html`
+* Exam Service → `/swagger-ui/index.html`
+* Submission Service → `/swagger-ui/index.html`
+* Result Service → `/swagger-ui/index.html`
+
+JWT authentication is supported through the **Authorize** button in Swagger.
+
+---
+
+# ✅ Validation & Exception Handling
+
+Implemented:
+
+* Bean Validation (`@Valid`, `@Validated`)
+* Global Exception Handling
+* BusinessException
+* ResourceNotFoundException
+* MethodArgumentNotValidException
+
+---
+
+# 🔒 Security
+
+* JWT Authentication
+* Password Encryption (BCrypt)
+* Stateless Authentication
+* Protected REST APIs
+
+---
+
+# 📂 Project Structure
 
 ```text
-http://localhost:8761
-```
-
-### Swagger URLs
-
-#### Auth Service
-
-```text
-http://localhost:8081/swagger-ui/index.html
-```
-
-#### Exam Service
-
-```text
-http://localhost:8082/swagger-ui/index.html
-```
-
-#### Submission Service
-
-```text
-http://localhost:8083/swagger-ui/index.html
+online-examination-platform
+│
+├── eureka-server
+├── api-gateway
+├── auth-service
+├── exam-service
+├── submission-service
+└── result-service
 ```
 
 ---
 
-## Learning Goals
+# 🔄 Complete API Flow
 
-This project is being built to gain hands-on experience with:
-
-- Spring Boot
-- Microservices Architecture
-- Service Discovery
-- API Communication using OpenFeign
-- Authentication & Authorization
-- REST API Design
-- Production-Oriented Backend Development
+1. Register User
+2. Login
+3. Create Exam
+4. Publish Exam
+5. Start Exam Attempt
+6. Submit Exam
+7. Generate Result
+8. View Result
 
 ---
 
-## Author
+# 🚧 Future Improvements
+
+* React Frontend
+* Teacher Dashboard
+* Student Dashboard
+* Timer-Based Exams
+* Docker & Docker Compose
+* Kubernetes Deployment
+* Redis Caching
+* Kafka Event Streaming
+* Unit & Integration Testing
+* CI/CD Pipeline
+* Monitoring with Prometheus & Grafana
+
+---
+
+# 👨‍💻 Author
 
 **Abhish Tarhekar**
 
-Java Backend Developer | Spring Boot | Microservices | REST APIs | MySQL | DSA
+If you found this project helpful, feel free to ⭐ the repository.

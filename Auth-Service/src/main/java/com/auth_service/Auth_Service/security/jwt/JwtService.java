@@ -11,6 +11,8 @@ import io.jsonwebtoken.Claims;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -34,13 +36,23 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
 
+
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put(
+                "role",
+                userDetails.getAuthorities()
+                        .iterator()
+                        .next()
+                        .getAuthority()
+        );
+
         return Jwts.builder()
-                .subject(userDetails.getUsername()) // email
+                .claims(claims)
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(
-                        new Date(
-                                System.currentTimeMillis() + expiration
-                        )
+                        new Date(System.currentTimeMillis() + expiration)
                 )
                 .signWith(signingKey)
                 .compact();

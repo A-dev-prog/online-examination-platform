@@ -1,9 +1,6 @@
 package com.auth_service.Auth_Service.service.impl;
 
-import com.auth_service.Auth_Service.dto.LoginRequest;
-import com.auth_service.Auth_Service.dto.LoginResponse;
-import com.auth_service.Auth_Service.dto.RegisterRequest;
-import com.auth_service.Auth_Service.dto.UserResponse;
+import com.auth_service.Auth_Service.dto.*;
 import com.auth_service.Auth_Service.entity.Role;
 import com.auth_service.Auth_Service.entity.User;
 import com.auth_service.Auth_Service.exception.BusinessException;
@@ -83,6 +80,28 @@ public class AuthServiceImpl implements AuthService {
         return new LoginResponse(
                 token,
                 "Bearer"
+        );
+    }
+
+    @Override
+    public CurrentUserResponse getCurrentUser(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        String role = user.getRoles()
+                .stream()
+                .findFirst()
+                .map(Role::getName)
+                .map(Enum::name)
+                .orElse("");
+
+        return new CurrentUserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                role
         );
     }
 }

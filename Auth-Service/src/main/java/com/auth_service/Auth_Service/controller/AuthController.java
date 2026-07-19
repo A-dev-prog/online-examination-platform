@@ -1,9 +1,6 @@
 package com.auth_service.Auth_Service.controller;
 
-import com.auth_service.Auth_Service.dto.LoginRequest;
-import com.auth_service.Auth_Service.dto.LoginResponse;
-import com.auth_service.Auth_Service.dto.RegisterRequest;
-import com.auth_service.Auth_Service.dto.UserResponse;
+import com.auth_service.Auth_Service.dto.*;
 import com.auth_service.Auth_Service.entity.User;
 import com.auth_service.Auth_Service.service.AuthService;
 import com.auth_service.Auth_Service.service.impl.AuthServiceImpl;
@@ -66,12 +63,13 @@ public class AuthController {
             description = "Authenticated user details returned"
     )
     @GetMapping("/me")
-    public ResponseEntity<String> me(
+    public ResponseEntity<CurrentUserResponse> me(
             Authentication authentication
     ) {
 
         return ResponseEntity.ok(
-                authentication.getName()
+                authService.getCurrentUser(authentication.getName())
         );
+
     }
 }

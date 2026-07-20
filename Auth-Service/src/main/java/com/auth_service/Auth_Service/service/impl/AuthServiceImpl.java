@@ -85,7 +85,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public CurrentUserResponse getCurrentUser(String email) {
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
@@ -104,4 +103,6 @@ public class AuthServiceImpl implements AuthService {
                 role
         );
     }
+
+
 }

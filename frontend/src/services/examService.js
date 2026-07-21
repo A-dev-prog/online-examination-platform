@@ -1,19 +1,18 @@
 import api from "../api/axios";
 
-export const getAllExams = async (
-    page = 0,
-    size = 10
-) => {
+export const getAllExams = async (page = 0, size = 10) => {
+  const response = await api.get("/api/exams", {
+    params: {
+      page,
+      size,
+    },
+  });
 
-    const response = await api.get("/api/exams", {
+  return response.data;
+};
 
-        params: {
-            page,
-            size,
-        },
+export const createExam = async (examData) => {
+  const response = await api.post("/api/exams", examData);
 
-    });
-
-    return response.data;
-
+  return response.data;
 };

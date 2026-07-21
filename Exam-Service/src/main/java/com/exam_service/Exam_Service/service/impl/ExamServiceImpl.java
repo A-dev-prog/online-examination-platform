@@ -47,36 +47,36 @@ public class ExamServiceImpl implements ExamService {
                 .build();
 
 
-        List<Question> questions = request.questions()
-                .stream()
-                .map(questionRequest->{
-                    Question question = Question.builder()
-                            .questionText(questionRequest.questionText())
-                            .marks(questionRequest.marks())
-                            .displayOrder(questionRequest.displayOrder())
-                            .questionType(questionRequest.questionType())
-                            .exam(exam)
-                            .build();
-
-                List<AnswerOption> options = questionRequest.options()
-                            .stream()
-                            .map(optionRequest ->
-                                    AnswerOption.builder()
-                                            .optionText(
-                                                    optionRequest.optionText()
-                                            )
-                                            .correct(
-                                                    optionRequest.correct()
-                                            )
-                                            .question(question)
-                                            .build()
-                            )
-                            .toList();
-                question.setOptions(options);
-                return question;
-                })
-                .toList();
-        exam.setQuestions(questions);
+//        List<Question> questions = request.questions()
+//                .stream()
+//                .map(questionRequest->{
+//                    Question question = Question.builder()
+//                            .questionText(questionRequest.questionText())
+//                            .marks(questionRequest.marks())
+//                            .displayOrder(questionRequest.displayOrder())
+//                            .questionType(questionRequest.questionType())
+//                            .exam(exam)
+//                            .build();
+//
+//                List<AnswerOption> options = questionRequest.options()
+//                            .stream()
+//                            .map(optionRequest ->
+//                                    AnswerOption.builder()
+//                                            .optionText(
+//                                                    optionRequest.optionText()
+//                                            )
+//                                            .correct(
+//                                                    optionRequest.correct()
+//                                            )
+//                                            .question(question)
+//                                            .build()
+//                            )
+//                            .toList();
+//                question.setOptions(options);
+//                return question;
+//                })
+//                .toList();
+//        exam.setQuestions(questions);
         Exam saved = examRepository.save(exam);
 
         return new CreateExamResponse(
@@ -88,9 +88,9 @@ public class ExamServiceImpl implements ExamService {
 
     private void validateExam(CreateExamRequest request) {
 
-        if(request.questions() == null || request.questions().isEmpty()){
-            throw  new BusinessException("Exam must have at least one question");
-        }
+//        if(request.questions() == null || request.questions().isEmpty()){
+//            throw  new BusinessException("Exam must have at least one question");
+//        }
 
         request.questions().forEach(this ::validateExam);
     }

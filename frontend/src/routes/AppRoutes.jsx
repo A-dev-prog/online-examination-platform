@@ -9,6 +9,7 @@ import Unauthorized from "../pages/Unauthorized";
 import TeacherLayout from "../components/teacher/TeacherLayout";
 import TeacherProfile from "../pages/teacher/TeacherProfile";
 import Exams from "../pages/teacher/exam/Exams";
+import CreateExam from "../pages/teacher/exam/CreateExam";
 
 export default function AppRoutes() {
   return (
@@ -17,9 +18,7 @@ export default function AppRoutes() {
 
       <Route path="/login" element={<Login />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route path="profile" element={<TeacherProfile />} />
-     
-
+      
       <Route
         path="/teacher"
         element={
@@ -33,7 +32,9 @@ export default function AppRoutes() {
         <Route path="dashboard" element={<TeacherDashboard />} />
 
         <Route path="profile" element={<TeacherProfile />} />
-         <Route path="exams" element={<Exams />} />
+        <Route path="exams" element={<Exams />} />
+        <Route path="exams/create" element={<CreateExam />} />
+
       </Route>
 
       <Route

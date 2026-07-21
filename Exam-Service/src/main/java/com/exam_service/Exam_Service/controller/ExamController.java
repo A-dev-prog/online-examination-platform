@@ -2,17 +2,18 @@ package com.exam_service.Exam_Service.controller;
 
 import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
-import com.exam_service.Exam_Service.dto.response.CreateExamResponse;
-import com.exam_service.Exam_Service.dto.response.ExamResponse;
-import com.exam_service.Exam_Service.dto.response.ExamSummaryResponse;
-import com.exam_service.Exam_Service.dto.response.PublishedExamResponse;
+import com.exam_service.Exam_Service.dto.request.CreateQuestionRequest;
+import com.exam_service.Exam_Service.dto.response.*;
+import com.exam_service.Exam_Service.repository.QuestionRepository;
 import com.exam_service.Exam_Service.service.impl.ExamServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class ExamController {
 
     private final ExamServiceImpl  examService;
+    private final QuestionRepository questionRepository;
     @Operation(
             summary = "Create Exam",
             description = "Creates a new exam with questions and answer options."
@@ -49,6 +51,15 @@ public class ExamController {
             @ApiResponse(responseCode = "200", description = "Exam found"),
             @ApiResponse(responseCode = "404", description = "Exam not found")
     })
+    @PostMapping("/{examId}/questions")
+    public ResponseEntity<QuestionResponse> addQuestion(
+            @PathVariable Long examId,
+            @Valid @RequestBody CreateQuestionRequest request
+    ) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(examService.addQuestion(examId, request));
+    }
     @GetMapping("/{examId}")
     public ResponseEntity<ExamResponse> getExam(@PathVariable("examId") Long examId)
     {

@@ -12,6 +12,7 @@ import com.exam_service.Exam_Service.entity.QuestionType;
 import com.exam_service.Exam_Service.exception.BusinessException;
 import com.exam_service.Exam_Service.exception.ResourceNotFoundException;
 import com.exam_service.Exam_Service.repository.ExamRepository;
+import com.exam_service.Exam_Service.repository.QuestionRepository;
 import com.exam_service.Exam_Service.service.ExamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import java.util.stream.Stream;
 public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
 
+
     public CreateExamResponse createExam(CreateExamRequest request) {
 
         validateExam(request);
@@ -45,38 +47,7 @@ public class ExamServiceImpl implements ExamService {
                 .createdBy(request.createdBy())
                 .published(false)
                 .build();
-
-
-//        List<Question> questions = request.questions()
-//                .stream()
-//                .map(questionRequest->{
-//                    Question question = Question.builder()
-//                            .questionText(questionRequest.questionText())
-//                            .marks(questionRequest.marks())
-//                            .displayOrder(questionRequest.displayOrder())
-//                            .questionType(questionRequest.questionType())
-//                            .exam(exam)
-//                            .build();
-//
-//                List<AnswerOption> options = questionRequest.options()
-//                            .stream()
-//                            .map(optionRequest ->
-//                                    AnswerOption.builder()
-//                                            .optionText(
-//                                                    optionRequest.optionText()
-//                                            )
-//                                            .correct(
-//                                                    optionRequest.correct()
-//                                            )
-//                                            .question(question)
-//                                            .build()
-//                            )
-//                            .toList();
-//                question.setOptions(options);
-//                return question;
-//                })
-//                .toList();
-//        exam.setQuestions(questions);
+        
         Exam saved = examRepository.save(exam);
 
         return new CreateExamResponse(
@@ -85,6 +56,73 @@ public class ExamServiceImpl implements ExamService {
         );
 
     }
+
+    @Override
+    @Transactional
+    public QuestionResponse addQuestion(Long examId, CreateQuestionRequest request) {
+
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Exam not found"));
+
+        Question question = Question.builder()
+                .questionText(request.questionText())
+                .marks(request.marks())
+                .displayOrder(request.displayOrder())
+                .questionType(request.questionType())
+                .exam(exam)
+                .build();
+
+        List<AnswerOption> options = request.options()
+                .stream()
+                .map(optionRequest -> {
+
+                    AnswerOption option = AnswerOption.builder()
+                            .optionText(optionRequest.optionText())
+                            .correct(optionRequest.correct())
+                            .question(question)
+                            .build();
+
+                    return option;
+
+                })
+                .toList();
+
+        question.setOptions(options);
+
+        exam.getQuestions().add(question);
+
+        examRepository.save(exam);
+
+        Question savedQuestion = exam.getQuestions()
+                .get(exam.getQuestions().size() - 1);
+
+        return mapToQuestionResponse(savedQuestion);
+    }
+
+    private QuestionResponse mapToQuestionResponse(Question question) {
+
+        List<AnswerOptionResponse> options = question.getOptions()
+                .stream()
+                .map(option ->
+                        new AnswerOptionResponse(
+                                option.getId(),
+                                option.getOptionText(),
+                                option.isCorrect()
+                        )
+                )
+                .toList();
+
+        return new QuestionResponse(
+                question.getId(),
+                question.getQuestionText(),
+                question.getMarks(),
+                question.getDisplayOrder(),
+                question.getQuestionType().name(),
+                options
+        );
+    }
+
 
     private void validateExam(CreateExamRequest request) {
 
@@ -151,7 +189,7 @@ public class ExamServiceImpl implements ExamService {
                                                 .map(option -> new AnswerOptionResponse(
                                                         option.getId(),
                                                         option.getOptionText(),
-                                                        option.getCorrect()
+                                                        option.isCorrect()
                                                 )).toList()
                                 )).toList()
         );
@@ -210,7 +248,7 @@ public class ExamServiceImpl implements ExamService {
                 .map(question -> {
                           Long correctOptionId =  question.getOptions()
                                     .stream()
-                                    .filter(answerOption -> answerOption.getCorrect())
+                                    .filter(answerOption -> answerOption.isCorrect())
                                     .findFirst()
                                     .orElseThrow(() -> new RuntimeException("Correct option is not found"))
                                     .getId();

@@ -2,15 +2,14 @@ package com.exam_service.Exam_Service.service;
 
 import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
-import com.exam_service.Exam_Service.dto.response.CreateExamResponse;
-import com.exam_service.Exam_Service.dto.response.ExamResponse;
-import com.exam_service.Exam_Service.dto.response.ExamSummaryResponse;
-import com.exam_service.Exam_Service.dto.response.PublishedExamResponse;
+import com.exam_service.Exam_Service.dto.request.CreateQuestionRequest;
+import com.exam_service.Exam_Service.dto.response.*;
 import org.springframework.data.domain.Page;
 
 public interface ExamService {
 
     CreateExamResponse createExam(CreateExamRequest request);
+    QuestionResponse addQuestion(Long examId, CreateQuestionRequest request);
 
     ExamResponse getExamById(Long examId);
 

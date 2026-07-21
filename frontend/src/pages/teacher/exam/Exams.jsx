@@ -122,7 +122,9 @@ export default function Exams() {
 
                   <td className="px-6 py-4">
                     <div className="flex gap-4">
-                      <button>
+                      <button
+                        onClick={() => navigate(`/teacher/exams/${exam.id}`)}
+                      >
                         <Eye
                           size={18}
                           className="text-blue-600 hover:text-blue-800"

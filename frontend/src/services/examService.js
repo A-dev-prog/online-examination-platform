@@ -16,3 +16,11 @@ export const createExam = async (examData) => {
 
   return response.data;
 };
+
+export const getExamById = async (id) => {
+
+    const response = await api.get(`/api/exams/${id}`);
+
+    return response.data;
+
+};

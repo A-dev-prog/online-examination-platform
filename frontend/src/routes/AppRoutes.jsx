@@ -10,6 +10,8 @@ import TeacherLayout from "../components/teacher/TeacherLayout";
 import TeacherProfile from "../pages/teacher/TeacherProfile";
 import Exams from "../pages/teacher/exam/Exams";
 import CreateExam from "../pages/teacher/exam/CreateExam";
+import ViewExam from "../pages/teacher/exam/ViewExam";
+import AddQuestion from "../pages/teacher/exam/AddQuestion";
 
 export default function AppRoutes() {
   return (
@@ -18,7 +20,7 @@ export default function AppRoutes() {
 
       <Route path="/login" element={<Login />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
-      
+
       <Route
         path="/teacher"
         element={
@@ -34,7 +36,8 @@ export default function AppRoutes() {
         <Route path="profile" element={<TeacherProfile />} />
         <Route path="exams" element={<Exams />} />
         <Route path="exams/create" element={<CreateExam />} />
-
+        <Route path="exams/:id" element={<ViewExam />} />
+        <Route path="exams/:id/questions/create" element={<AddQuestion />} />
       </Route>
 
       <Route

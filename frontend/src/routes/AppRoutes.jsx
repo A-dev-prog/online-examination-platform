@@ -38,6 +38,10 @@ export default function AppRoutes() {
         <Route path="exams/create" element={<CreateExam />} />
         <Route path="exams/:id" element={<ViewExam />} />
         <Route path="exams/:id/questions/create" element={<AddQuestion />} />
+        <Route
+          path="exams/:examId/questions/:questionId/edit"
+          element={<AddQuestion />}
+        />
       </Route>
 
       <Route

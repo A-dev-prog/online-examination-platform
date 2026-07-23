@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Clock, FileText, Trophy, Plus } from "lucide-react";
 import { getExamById } from "../../../services/examService";
+import { Trash2, Pencil,} from "lucide-react";
+import { deleteQuestion } from "../../../services/questionService";
 
 export default function ViewExam() {
   const { id } = useParams();
@@ -29,6 +31,29 @@ export default function ViewExam() {
       setLoading(false);
     }
   };
+  const handleDelete = async (questionId) => {
+
+    const confirmed = window.confirm(
+        "Delete this question?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+        await deleteQuestion(questionId);
+
+        loadExam();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Failed to delete question");
+
+    }
+
+};
 
   if (loading) {
     return <div className="flex justify-center py-20">Loading...</div>;
@@ -119,14 +144,44 @@ export default function ViewExam() {
           exam.questions.map((question) => (
             <div key={question.id} className="mb-8 rounded-lg border p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-semibold">
-                  Q{question.displayOrder}. {question.questionText}
-                </h3>
 
-                <span className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700">
-                  {question.marks} Marks
-                </span>
-              </div>
+    <div>
+
+        <h3 className="text-lg font-semibold">
+
+            Q{question.displayOrder}. {question.questionText}
+
+        </h3>
+
+    </div>
+
+    <div className="flex items-center gap-3">
+
+    <button
+        onClick={() =>
+            navigate(
+                `/teacher/exams/${exam.id}/questions/${question.id}/edit`
+            )
+        }
+    >
+        <Pencil
+            size={18}
+            className="text-blue-600 hover:text-blue-800"
+        />
+    </button>
+
+    <button
+        onClick={() => handleDelete(question.id)}
+    >
+        <Trash2
+            size={18}
+            className="text-red-600 hover:text-red-800"
+        />
+    </button>
+
+</div>
+
+</div>
 
               <div className="space-y-3">
                 {question.options.map((option) => (

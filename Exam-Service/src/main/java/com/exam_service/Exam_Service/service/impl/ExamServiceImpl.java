@@ -2,6 +2,7 @@ package com.exam_service.Exam_Service.service.impl;
 
 import com.exam_service.Exam_Service.dto.internal.ExamAnswerKeyResponse;
 import com.exam_service.Exam_Service.dto.internal.QuestionAnswerKeyResponse;
+import com.exam_service.Exam_Service.dto.request.CreateAnswerOptionRequest;
 import com.exam_service.Exam_Service.dto.request.CreateExamRequest;
 import com.exam_service.Exam_Service.dto.request.CreateQuestionRequest;
 import com.exam_service.Exam_Service.dto.response.*;
@@ -33,6 +34,7 @@ import java.util.stream.Stream;
 @Transactional
 public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
+    private final QuestionRepository questionRepository;
 
 
     public CreateExamResponse createExam(CreateExamRequest request) {
@@ -47,7 +49,7 @@ public class ExamServiceImpl implements ExamService {
                 .createdBy(request.createdBy())
                 .published(false)
                 .build();
-        
+
         Exam saved = examRepository.save(exam);
 
         return new CreateExamResponse(
@@ -98,6 +100,59 @@ public class ExamServiceImpl implements ExamService {
                 .get(exam.getQuestions().size() - 1);
 
         return mapToQuestionResponse(savedQuestion);
+    }
+
+    @Override
+    @Transactional
+    public void deleteQuestion(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Question not found"));
+
+        questionRepository.delete(question);
+
+    }
+
+    @Override
+    public QuestionResponse getQuestion(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Question not found"
+                        ));
+
+        return mapToQuestionResponse(question);
+    }
+
+    @Override
+    public QuestionResponse updateQuestion(Long questionId, CreateQuestionRequest request) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+
+        // Update question fields
+        question.setQuestionText(request.questionText());
+        question.setMarks(request.marks());
+        question.setDisplayOrder(request.displayOrder());
+        question.setQuestionType(request.questionType());
+
+        // Remove old options
+        question.getOptions().clear();
+
+        for (CreateAnswerOptionRequest optionRequest : request.options()) {
+
+            AnswerOption option = AnswerOption.builder()
+                    .optionText(optionRequest.optionText())
+                    .correct(optionRequest.correct())
+                    .question(question)
+                    .build();
+
+            question.getOptions().add(option);
+        }
+
+        Question updatedQuestion = questionRepository.save(question);
+
+        return mapToQuestionResponse(updatedQuestion);
+
     }
 
     private QuestionResponse mapToQuestionResponse(Question question) {

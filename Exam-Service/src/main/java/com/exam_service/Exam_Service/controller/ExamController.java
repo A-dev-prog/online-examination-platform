@@ -28,7 +28,7 @@ import java.util.List;
 public class ExamController {
 
     private final ExamServiceImpl  examService;
-    private final QuestionRepository questionRepository;
+
     @Operation(
             summary = "Create Exam",
             description = "Creates a new exam with questions and answer options."
@@ -59,6 +59,37 @@ public class ExamController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(examService.addQuestion(examId, request));
+    }
+    @DeleteMapping("/questions/{questionId}")
+    public ResponseEntity<Void> deleteQuestion(
+            @PathVariable Long questionId
+    ) {
+
+        examService.deleteQuestion(questionId);
+
+        return ResponseEntity.noContent().build();
+
+    }
+    @GetMapping("/questions/{questionId}")
+    public ResponseEntity<QuestionResponse> getQuestion(
+            @PathVariable Long questionId
+    ) {
+
+        return ResponseEntity.ok(
+                examService.getQuestion(questionId)
+        );
+
+    }
+    @PutMapping("/questions/{questionId}")
+    public ResponseEntity<QuestionResponse> updateQuestion(
+            @PathVariable Long questionId,
+            @Valid @RequestBody CreateQuestionRequest request
+    ) {
+
+        return ResponseEntity.ok(
+                examService.updateQuestion(questionId, request)
+        );
+
     }
     @GetMapping("/{examId}")
     public ResponseEntity<ExamResponse> getExam(@PathVariable("examId") Long examId)

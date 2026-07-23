@@ -10,6 +10,13 @@ public interface ExamService {
 
     CreateExamResponse createExam(CreateExamRequest request);
     QuestionResponse addQuestion(Long examId, CreateQuestionRequest request);
+    void deleteQuestion(Long questionId);
+    QuestionResponse getQuestion(Long questionId);
+
+    QuestionResponse updateQuestion(
+            Long questionId,
+            CreateQuestionRequest request
+    );
 
     ExamResponse getExamById(Long examId);
 

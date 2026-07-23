@@ -18,9 +18,11 @@ export const createExam = async (examData) => {
 };
 
 export const getExamById = async (id) => {
+  const response = await api.get(`/api/exams/${id}`);
 
-    const response = await api.get(`/api/exams/${id}`);
+  return response.data;
+};
 
-    return response.data;
-
+export const deleteExam = async (examId) => {
+  await api.delete(`/api/exams/${examId}`);
 };

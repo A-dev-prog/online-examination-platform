@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Plus, Eye, Pencil, Trash2 } from "lucide-react";
 
-import { getAllExams } from "../../../services/examService";
+import { getAllExams, deleteExam } from "../../../services/examService";
 
 export default function Exams() {
   const navigate = useNavigate();
@@ -29,6 +29,25 @@ export default function Exams() {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+  const handleDeleteExam = async (examId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this exam?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteExam(examId);
+
+      alert("Exam deleted successfully");
+
+      loadExams(); // refresh list
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to delete exam");
     }
   };
 
@@ -138,7 +157,7 @@ export default function Exams() {
                         />
                       </button>
 
-                      <button>
+                      <button onClick={() => handleDeleteExam(exam.id)}>
                         <Trash2
                           size={18}
                           className="text-red-600 hover:text-red-800"
